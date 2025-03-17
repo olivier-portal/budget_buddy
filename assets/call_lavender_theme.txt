@@ -1,2 +1,2 @@
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("themes/lavender.json")
+customtkinter.set_default_color_theme("assets/lavender.json")
