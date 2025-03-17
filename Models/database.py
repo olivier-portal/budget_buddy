@@ -32,7 +32,7 @@ class Database:
     
     def create_database(self, database):
         '''create a database'''
-        with self.connect() as conn:
+        with self.connect() as conn:  # with statement to automatically close the connection
             if conn:
                 cursor = conn.cursor()
                 cursor.execute(f"CREATE DATABASE {database}")
@@ -40,7 +40,7 @@ class Database:
 
     def create_table_client(self):
         '''create a table'''
-        with self.connect() as conn:
+        with self.connect("budget_buddy") as conn:
             if conn:
                 cursor = conn.cursor()
                 cursor.execute("""
