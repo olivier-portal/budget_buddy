@@ -1,5 +1,4 @@
-from budget_buddy.models.database import Database
-from budget_buddy.models.main_view import MainView
+from models import *
 
 class App:
     def __init__(self):
