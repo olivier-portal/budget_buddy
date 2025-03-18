@@ -44,7 +44,7 @@ class Database:
         with self.connect() as conn:  # with statement to automatically close the connection
             if conn:
                 cursor = conn.cursor()
-                cursor.execute(f"CREATE DATABASE budget_buddy")
+                cursor.execute(f"CREATE DATABASE IF NOT EXISTS budget_buddy")
                 conn.commit()
 
     def create_table_client(self):
@@ -61,7 +61,7 @@ class Database:
                         last_name VARCHAR(100) NOT NULL,
                         first_name VARCHAR(50) NOT NULL,
                         email VARCHAR(100) NOT NULL,
-                        password VARCHAR(50) NOT NULL,
+                        password VARCHAR(255) NOT NULL,
                         PRIMARY KEY(id_client),
                         UNIQUE(email)
                     )
@@ -79,8 +79,8 @@ class Database:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS account(
                         id_account INT AUTO_INCREMENT,
-                        IBAN VARCHAR(34) NOT NULL,
-                        amount DECIMAL(15,2) NOT NULL,
+                        IBAN CHAR(34) NOT NULL,
+                        amount DECIMAL(12,2) NOT NULL,
                         creation_date DATE NOT NULL,
                         id_client INT NOT NULL,
                         PRIMARY KEY(id_account),
@@ -117,7 +117,7 @@ class Database:
         """"""
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         try:
-            with self.connect(self.db_name) as conn:
+            with self.connect("budget_buddy") as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
                        INSERT INTO client (last_name, first_name, email, password)
@@ -132,7 +132,7 @@ class Database:
     def verify_user(self, email, password):
         """"""
         try:
-            with self.connect(self.db_name) as conn:
+            with self.connect("budget_buddy") as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
                 result = cursor.fetchone()

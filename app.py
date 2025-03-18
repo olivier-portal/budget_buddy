@@ -11,4 +11,8 @@ class App:
 
 if __name__ == '__main__':
     app = App()
+    app.budget_db.create_database()
+    app.budget_db.create_table_client()
+    app.budget_db.create_table_account()
+    app.budget_db.create_table_transaction()
     app.run()
