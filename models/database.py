@@ -35,16 +35,15 @@ class Database:
         except Error as e:
             raise Exception(f"Database connection error: {e}")
     
-    def create_database(self, database):
+    def create_database(self):
         """
         Create a new database.
-        :param database: The database name.
         :return: ∅
         """
         with self.connect() as conn:  # with statement to automatically close the connection
             if conn:
                 cursor = conn.cursor()
-                cursor.execute(f"CREATE DATABASE {database}")
+                cursor.execute(f"CREATE DATABASE budget_buddy")
                 conn.commit()
 
     def create_table_client(self):
