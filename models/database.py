@@ -44,7 +44,7 @@ class Database:
         with self.connect() as conn:  # with statement to automatically close the connection
             if conn:
                 cursor = conn.cursor()
-                cursor.execute(f"CREATE DATABASE budget_buddy")
+                cursor.execute(f"CREATE DATABASE IF NOT EXISTS budget_buddy")
                 conn.commit()
 
     def create_table_client(self):
@@ -120,9 +120,9 @@ class Database:
             with self.connect(self.db_name) as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                       INSERT INTO client (last_name, first_name, email, password)
-                       VALUES (%s, %s, %s, %s)
-                   """, (last_name, first_name, email, hashed_password))
+                    INSERT INTO client (last_name, first_name, email, password)
+                    VALUES (%s, %s, %s, %s)
+                    """, (last_name, first_name, email, hashed_password))
                 conn.commit()
                 return True
         except Error as e:
