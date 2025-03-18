@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import find_dotenv, load_dotenv
 from os import getenv
+import bcrypt
 
 
 class Database:
@@ -66,7 +67,7 @@ class Database:
                     )
                     """)
                 conn.commit()
-                
+
     def create_table_account(self):
         """
         Create the account table of the budget_buddy database.
@@ -88,7 +89,7 @@ class Database:
                         )
                         """)
                 conn.commit()
-                
+
     def create_table_transaction(self):
         """
         Create the client transaction of the budget_buddy database.
@@ -112,4 +113,31 @@ class Database:
                     """)
                 conn.commit()
 
-   
+
+def add_user(self, last_name, first_name, email, password):
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    try:
+        with self.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                   INSERT INTO client (last_name, first_name, email, password)
+                   VALUES (%s, %s, %s, %s)
+               """, (last_name, first_name, email, hashed_password))
+            conn.commit()
+            return True
+    except Error as e:
+        print(f"Error adding user: {e}")
+        return False
+
+
+def verify_user(self, email, password):
+    try:
+        with self.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
+            result = cursor.fetchone()
+            if result and bcrypt.checkpw(password.encode('utf-8'), result[0].encode('utf-8')):
+                return True
+    except Error as e:
+        print(f"Error verifying user: {e}")
+    return False
