@@ -9,7 +9,7 @@ class LoginModel:
         self.main_view = main_view
 
     def create_login_screen(self):
-        self.main_view.clear_screen()
+        self.main_view.clear_screen()  # to improve
         self.login_frame = ctk.CTkFrame(self.main_view)
         self.login_frame.pack(pady=20, padx=60, fill="both", expand=True)
 
