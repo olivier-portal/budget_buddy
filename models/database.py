@@ -7,7 +7,7 @@ import bcrypt
 class Database:
     def __init__(self):
         # Load the environment variables from .env
-        self.dotenv_path = find_dotenv(".env")
+        self.dotenv_path = find_dotenv("../.env")
         load_dotenv(self.dotenv_path)
 
         # Access to the environment variables
