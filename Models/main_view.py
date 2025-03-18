@@ -4,9 +4,9 @@ from tkinter import messagebox
 import re
 
 class MainView(ctk.CTk):
-    def __init__(self, controller):
+    def __init__(self, database):
         super().__init__()
-        self.controller = controller
+        self.database = database
         self.title("Budget Buddy")
         self.geometry("350x600")  # width x height
         self.create_login_screen()
@@ -54,7 +54,7 @@ class MainView(ctk.CTk):
     def login(self):
         email = self.email_entry.get()
         password = self.password_entry.get()
-        if self.controller.verify_user(email, password):
+        if self.database.verify_user(email, password):
             messagebox.showinfo("Login", "Login successful!")
             self.create_main_screen()
         else:
@@ -70,7 +70,7 @@ class MainView(ctk.CTk):
             messagebox.showerror("Registration", "Password must contain at least one uppercase letter, one lowercase letter, one special character, one digit, and be at least ten characters long.")
             return
 
-        if self.controller.add_user(last_name, first_name, email, password):
+        if self.database.add_user(last_name, first_name, email, password):
             messagebox.showinfo("Registration", "Registration successful!")
             self.create_login_screen()
         else:
