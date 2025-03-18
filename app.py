@@ -1,5 +1,5 @@
-from models.database import Database
-from models.main_view import MainView
+from models import *
+
 
 class App:
     def __init__(self):
@@ -9,6 +9,7 @@ class App:
     def run(self):
         view = MainView(self.budget_db)
         view.mainloop()
+
 
 if __name__ == '__main__':
     app = App()
