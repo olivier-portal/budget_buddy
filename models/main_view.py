@@ -69,6 +69,10 @@ class MainView(ctk.CTk):
         if not self.validate_password(password):
             messagebox.showerror("Registration", "Password must contain at least one uppercase letter, one lowercase letter, one special character, one digit, and be at least ten characters long.")
             return
+        
+        if not self.validate_email(email):
+            messagebox.showerror("Registration", "Your email adress must be under the format name@example.com")
+            return
 
         if self.database.add_user(last_name, first_name, email, password):
             messagebox.showinfo("Registration", "Registration successful!")
@@ -77,13 +81,12 @@ class MainView(ctk.CTk):
             messagebox.showerror("Registration", "Registration failed. Email may already be in use.")
 
     def validate_password(self, password):
-        if (len(password) >= 10 and
-            re.search(r"[A-Z]", password) and
-            re.search(r"[a-z]", password) and
-            re.search(r"[0-9]", password) and
-            re.search(r"[\W_]", password)):
-            return True
-        return False
+        password_format = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{10,}$'
+        return bool(re.match(password_format, password))
+    
+    def validate_email(self, email):
+        email_format = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(email_format, email))
 
     def create_main_screen(self):
         self.clear_screen()
