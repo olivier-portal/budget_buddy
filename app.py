@@ -1,5 +1,5 @@
-from Models.database import Database
-from Models.main_view import MainView
+from models.database import Database
+from models.main_view import MainView
 
 class App:
     def __init__(self):
