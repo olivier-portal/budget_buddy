@@ -114,10 +114,14 @@ class Database:
                 conn.commit()
 
     def add_user(self, last_name, first_name, email, password):
-        """"""
+        """
+        hash the password and add the user to the database
+        :return: True if the user is added to the database
+        :return: False otherwise
+        """
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         try:
-            with self.connect(self.db_name) as conn:
+            with self.connect("budget_buddy") as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
                        INSERT INTO client (last_name, first_name, email, password)
@@ -130,9 +134,13 @@ class Database:
             return False
 
     def verify_user(self, email, password):
-        """"""
+        """
+        get client from database using entered email and password (encryp entered password and compare with encripted stored password). 
+        :return: true if such client is in database
+        :return: False otherwise
+        """
         try:
-            with self.connect(self.db_name) as conn:
+            with self.connect("budget_buddy") as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
                 result = cursor.fetchone()

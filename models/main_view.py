@@ -48,6 +48,7 @@ class MainView(ctk.CTk):
         self.back_to_login_button.pack(pady=12, padx=10)
 
     def clear_screen(self):
+        """remove all ctkinter widget from the screen (empty the window)"""
         for widget in self.winfo_children():
             widget.destroy()
 
@@ -61,6 +62,7 @@ class MainView(ctk.CTk):
             messagebox.showerror("Login", "Invalid email or password")
 
     def register(self):
+        """get user input from registration screen, verify password complexity and add user to database"""
         last_name = self.last_name_entry.get()
         first_name = self.first_name_entry.get()
         email = self.email_entry.get()
@@ -77,6 +79,7 @@ class MainView(ctk.CTk):
             messagebox.showerror("Registration", "Registration failed. Email may already be in use.")
 
     def validate_password(self, password):
+        """use regex (by importing .re) to verify password meets requirements"""
         if (len(password) >= 10 and
             re.search(r"[A-Z]", password) and
             re.search(r"[a-z]", password) and
