@@ -2,7 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import find_dotenv, load_dotenv
 from os import getenv
-import bcrypt
 
 
 class Database:
@@ -44,7 +43,7 @@ class Database:
         with self.connect() as conn:  # with statement to automatically close the connection
             if conn:
                 cursor = conn.cursor()
-                cursor.execute(f"CREATE DATABASE budget_buddy")
+                cursor.execute(f"CREATE DATABASE IF NOT EXISTS budget_buddy")
                 conn.commit()
 
     def create_table_client(self):
@@ -79,8 +78,8 @@ class Database:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS account(
                         id_account INT AUTO_INCREMENT,
-                        IBAN VARCHAR(34) NOT NULL,
-                        amount DECIMAL(15,2) NOT NULL,
+                        IBAN CHAR(34) NOT NULL,
+                        amount DECIMAL(12,2) NOT NULL,
                         creation_date DATE NOT NULL,
                         id_client INT NOT NULL,
                         PRIMARY KEY(id_account),
@@ -112,40 +111,3 @@ class Database:
                     )
                     """)
                 conn.commit()
-
-    def add_user(self, last_name, first_name, email, password):
-        """
-        hash the password and add the user to the database
-        :return: True if the user is added to the database
-        :return: False otherwise
-        """
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        try:
-            with self.connect("budget_buddy") as conn:
-                cursor = conn.cursor()
-                cursor.execute("""
-                       INSERT INTO client (last_name, first_name, email, password)
-                       VALUES (%s, %s, %s, %s)
-                   """, (last_name, first_name, email, hashed_password))
-                conn.commit()
-                return True
-        except Error as e:
-            print(f"Error adding user: {e}")
-            return False
-
-    def verify_user(self, email, password):
-        """
-        get client from database using entered email and password (encryp entered password and compare with encripted stored password). 
-        :return: true if such client is in database
-        :return: False otherwise
-        """
-        try:
-            with self.connect("budget_buddy") as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
-                result = cursor.fetchone()
-                if result and bcrypt.checkpw(password.encode('utf-8'), result[0].encode('utf-8')):
-                    return True
-        except Error as e:
-            print(f"Error verifying user: {e}")
-        return False
