@@ -67,7 +67,7 @@ class Database:
                     """)
                 conn.commit()
                 
-    def create_account_table(self):
+    def create_table_account(self):
         """
         Create the account table of the budget_buddy database.
         :return: ∅
@@ -89,7 +89,7 @@ class Database:
                         """)
                 conn.commit()
                 
-    def create_transaction_table(self):
+    def create_table_transaction(self):
         """
         Create the client transaction of the budget_buddy database.
         :return: ∅
