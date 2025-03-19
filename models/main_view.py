@@ -10,6 +10,7 @@ class MainView(ctk.CTk):
         self.title("Budget Buddy")
         self.geometry("350x600")  # width x height
         self.create_login_screen()
+        self.logged_user = None
 
     def create_login_screen(self):
         self.clear_screen()
@@ -47,6 +48,18 @@ class MainView(ctk.CTk):
         self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=self.create_login_screen)
         self.back_to_login_button.pack(pady=12, padx=10)
 
+    def create_list_transactions_screen(self):
+        self.clear_screen()
+        # ...existing code for main screen...
+    
+    def create_new_transaction_screen(self):
+        self.clear_screen()
+        # ...existing code for new transaction screen
+
+    def create_account_selection_screen(self):
+        self.clear_screen()
+        # ...existing code for account selection screen
+
     def clear_screen(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -56,7 +69,7 @@ class MainView(ctk.CTk):
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
             messagebox.showinfo("Login", "Login successful!")
-            self.create_main_screen()
+            self.create_list_transactions_screen()
         else:
             messagebox.showerror("Login", "Invalid email or password")
 
@@ -83,11 +96,7 @@ class MainView(ctk.CTk):
     def validate_password(self, password):
         password_format = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{10,}$'
         return bool(re.match(password_format, password))
-    
+
     def validate_email(self, email):
         email_format = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return bool(re.match(email_format, email))
-
-    def create_main_screen(self):
-        self.clear_screen()
-        # ...existing code for main screen...

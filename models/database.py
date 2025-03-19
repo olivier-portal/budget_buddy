@@ -1,5 +1,4 @@
 from .database_connect import ConnectDatabase
-import mysql.connector
 from mysql.connector import Error
 import bcrypt
 import random
@@ -56,6 +55,7 @@ class Database(ConnectDatabase):
                 cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
                 result = cursor.fetchone()
                 if result and bcrypt.checkpw(password.encode('utf-8'), result[0].encode('utf-8')):
+                    user_id = cursor.lastrowid
                     return True
         except Error as e:
             print(f"Error verifying user: {e}")
@@ -84,3 +84,24 @@ class Database(ConnectDatabase):
             print(f"Error creating new account: {e}")
             return False
 
+    def save_transaction(self, transaction_type, amount, id_origin_account, id_destination_account=None):
+        """
+        Save a transaction between two accounts.
+        :param id_origin_account: The ID of the account from which the amount is withdrawn.
+        :param id_destination_account: The ID of the account to which the amount is deposited.
+        :param amount: The amount of the transaction.
+        :return: ∅
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        INSERT INTO transaction (id_origin_account, id_destination_account, transaction_type, amount, transaction_date)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """, (id_origin_account, id_destination_account, transaction_type, amount, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+                    conn.commit()
+                    return True
+        except Error as e:
+            print(f"Error saving transaction: {e}")
+            return False
