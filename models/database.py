@@ -2,6 +2,9 @@ from .database_connect import ConnectDatabase
 import mysql.connector
 from mysql.connector import Error
 import bcrypt
+import random
+import string
+from datetime import datetime
 
 
 class Database(ConnectDatabase):
@@ -56,4 +59,28 @@ class Database(ConnectDatabase):
                     return True
         except Error as e:
             print(f"Error verifying user: {e}")
-        return False
+            return False
+    
+    def new_account(self, id_client):
+        """
+        Create a new account for a client with an initial amount of 0, 
+        the current date as the creation date, and a unique IBAN.
+        :param id_client: The ID of the client for whom the account is created.
+        :return: ∅
+        """
+        iban = ''.join(random.choices(string.ascii_uppercase + string.digits, k=34))
+        creation_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        INSERT INTO account (IBAN, amount, creation_date, id_client)
+                        VALUES (%s, %s, %s, %s)
+                    """, (iban, 0, creation_date, id_client))
+                    conn.commit()
+                    return True
+        except Error as e:
+            print(f"Error creating new account: {e}")
+            return False
+
