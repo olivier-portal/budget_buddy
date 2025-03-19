@@ -13,18 +13,21 @@ class HomeFrame(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
         
         self.login_frame = ctk.CTkFrame(self)
-        self.login_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+        self.login_frame.grid(row=0, column=0, sticky="nsew", padx=50)
+        
+        self.login_frame.grid_rowconfigure(0, weight=1)
+        self.login_frame.grid_columnconfigure(0, weight=1)
 
         self.email_entry = ctk.CTkEntry(self.login_frame, placeholder_text="Email")
-        self.email_entry.grid(row=0, column=0, sticky="nsew", pady=5, padx=5)
+        self.email_entry.pack(pady=12, padx=10)
         self.password_entry = ctk.CTkEntry(self.login_frame, placeholder_text="Password", show="*")
-        self.password_entry.grid(row=1, column=0, sticky="nsew", pady=5, padx=5)
+        self.password_entry.pack(pady=12, padx=10)
 
         self.login_button = ctk.CTkButton(self.login_frame, text="Login", command=self.login)
-        self.login_button.grid(row=2, column=0, sticky="nsew", pady=5, padx=5)
+        self.login_button.pack(pady=12, padx=10)
 
         self.register_button = ctk.CTkButton(self.login_frame, text="Register", command=lambda: controller.show_frame("RegistrationFrame"))
-        self.register_button.grid(row=3, column=0, sticky="nsew", pady=5, padx=5)
+        self.register_button.pack(pady=12, padx=10)
 
     def login(self):
         email = self.email_entry.get()

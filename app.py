@@ -17,6 +17,8 @@ class App(ctk.CTk):
         # Init frames
         container = ctk.CTkFrame(self)
         container.pack(fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
         
         for F in (HomeFrame, RegistrationFrame):
             frame = F(database=self.budget_db, parent=container, controller=self)
