@@ -22,10 +22,10 @@ class RegistrationFrame(ctk.CTkFrame):
         
         # Create a container inside login_frame to hold widgets
         self.inner_frame = ctk.CTkFrame(self.register_frame, fg_color="white")
-        self.inner_frame.pack(expand=True, padx=20, pady=20)
+        self.inner_frame.pack(expand=True, padx=20, pady=10)
         
         self.label = ctk.CTkLabel(self.inner_frame, text="Create an account", font=("Arial", 24))
-        self.label.pack(padx=20, pady=20)
+        self.label.pack(padx=10, pady=10)
 
         self.last_name_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Last Name")
         self.last_name_entry.pack(pady=12, padx=10)

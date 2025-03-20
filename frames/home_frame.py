@@ -44,7 +44,7 @@ class HomeFrame(ctk.CTkFrame):
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
             messagebox.showinfo("Login", f"Login successful! Welcome {email}")
-            self.switch_to_registration()
+            self.switch_to_dashboard()
         else:
             messagebox.showerror("Login", "Invalid email or password")
             
@@ -52,4 +52,9 @@ class HomeFrame(ctk.CTkFrame):
         """Switch to the registration frame and update the header."""
         self.controller.add_header_label("Register")
         self.controller.show_frame("RegistrationFrame")
+        
+    def switch_to_dashboard(self):
+        """Switch to the registration frame and update the header."""
+        self.controller.add_header_label("Dasboard")
+        self.controller.show_frame("DashboardFrame")
     
