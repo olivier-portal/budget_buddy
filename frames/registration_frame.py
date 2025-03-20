@@ -3,14 +3,18 @@ from tkinter import messagebox
 import re
 
 from frames.login_frame import *
+from frames.frame_manager import *
 
-class RegistrationFrame(ctk.CTkFrame):
+class RegistrationFrame(ctk.CTkFrame, FrameManager):
     def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        
+        #Use FrameManager to switch between frames
+        self.frame_manager = FrameManager(controller)
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -43,7 +47,7 @@ class RegistrationFrame(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(self.register_frame, text="Register", command=self.register)
         self.register_button.pack(pady=12, padx=10)
 
-        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("LoginFrame"))
+        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: self.switch_to_login())
         self.back_to_login_button.pack(pady=12, padx=10)
 
     def register(self):
