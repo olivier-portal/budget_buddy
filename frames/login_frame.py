@@ -44,8 +44,8 @@ class LoginFrame(ctk.CTkFrame):
         email = self.email_entry.get()
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
-            messagebox.showinfo("Login", f"Login successful! Welcome {email}")
             self.client = self.database.get_client_by_email(email)
+            messagebox.showinfo("Login", f"Login successful! Welcome {self.client[2]}")
             print(self.client)
             self.switch_to_dashboard()
             print(self.client)
