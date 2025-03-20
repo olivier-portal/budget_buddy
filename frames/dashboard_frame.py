@@ -2,14 +2,15 @@ import customtkinter as ctk
 from tkinter import messagebox
 import re
 
-from frames.home_frame import *
+from frames.login_frame import *
 
 class DashboardFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller):
+    def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
+        self.client = client
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -30,5 +31,5 @@ class DashboardFrame(ctk.CTkFrame):
         # Add widgets to the frame
         """"""
 
-        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("HomeFrame"))
+        self.back_to_login_button = ctk.CTkButton(self.dashboard_frame, text="Back to Login", command=lambda: controller.show_frame("LoginFrame"))
         self.back_to_login_button.pack(pady=12, padx=10)

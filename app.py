@@ -43,7 +43,7 @@ class App(ctk.CTk):
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
         
-        for F in (LoginFrame, RegistrationFrame, OperationsListFrame):
+        for F in (LoginFrame, RegistrationFrame, OperationsListFrame, DashboardFrame):
             frame = F(database=self.budget_db, parent=self.container, controller=self, client=self.client)
             self.frame[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
