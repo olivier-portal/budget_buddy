@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 import re
 
-from frames.home_frame import *
+from frames.login_frame import *
 
 class RegistrationFrame(ctk.CTkFrame):
     def __init__(self, database, parent, controller):
@@ -27,7 +27,7 @@ class RegistrationFrame(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(self.register_frame, text="Register", command=self.register)
         self.register_button.pack(pady=12, padx=10)
 
-        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("HomeFrame"))
+        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("LoginFrame"))
         self.back_to_login_button.pack(pady=12, padx=10)
 
     def register(self):

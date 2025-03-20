@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-class HomeFrame(ctk.CTkFrame):
+class LoginFrame(ctk.CTkFrame):
     def __init__(self, database, parent, controller):
         super().__init__(parent)
         
