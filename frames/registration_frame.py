@@ -12,15 +12,31 @@ class RegistrationFrame(ctk.CTkFrame):
         self.database = database
         self.client = client
         
-        self.register_frame = ctk.CTkFrame(self)
-        self.register_frame.pack(fill="both", expand=True)
+        self.grid_rowconfigure(0, weight=1)  # configure grid system
+        self.grid_columnconfigure(0, weight=1)
+        
+        self.register_frame = ctk.CTkFrame(self, fg_color="white")
+        self.register_frame.grid(row=0, column=0, sticky="nsew")
+        
+        self.register_frame.grid_rowconfigure(0, weight=1)
+        self.register_frame.grid_columnconfigure(0, weight=1)
+        
+        # Create a container inside login_frame to hold widgets
+        self.inner_frame = ctk.CTkFrame(self.register_frame, fg_color="white")
+        self.inner_frame.pack(expand=True, padx=20, pady=10)
+        
+        self.label = ctk.CTkLabel(self.inner_frame, text="Create an account", font=("Arial", 24))
+        self.label.pack(padx=10, pady=10)
 
         self.last_name_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Last Name")
         self.last_name_entry.pack(pady=12, padx=10)
+        
         self.first_name_entry = ctk.CTkEntry(self.register_frame, placeholder_text="First Name")
         self.first_name_entry.pack(pady=12, padx=10)
+        
         self.email_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Email")
         self.email_entry.pack(pady=12, padx=10)
+        
         self.password_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Password", show="*")
         self.password_entry.pack(pady=12, padx=10)
 
