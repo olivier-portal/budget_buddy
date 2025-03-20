@@ -37,7 +37,7 @@ class LoginFrame(ctk.CTkFrame):
         self.login_button = ctk.CTkButton(self.inner_frame, text="Login", command=self.login)
         self.login_button.pack(padx=20, pady=20)
 
-        self.register_button = ctk.CTkButton(self.inner_frame, text="Register",  command=lambda: self.controller.show_frame("RegistrationFrame"))
+        self.register_button = ctk.CTkButton(self.inner_frame, text="Register",  command=lambda: self.switch_to_registration())
         self.register_button.pack(padx=20, pady=20)
 
     def login(self):

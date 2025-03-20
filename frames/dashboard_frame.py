@@ -36,5 +36,10 @@ class DashboardFrame(ctk.CTkFrame):
 
     def logout(self):
         self.client = None
-        self.controller.show_frame("LoginFrame")
+        self.switch_to_login()
         print(self.client)
+        
+    def switch_to_login(self):
+        """Switch to the login frame and update the header."""
+        self.controller.add_header_label("Home")
+        self.controller.show_frame("LoginFrame")

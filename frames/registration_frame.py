@@ -43,7 +43,7 @@ class RegistrationFrame(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(self.register_frame, text="Register", command=self.register)
         self.register_button.pack(pady=12, padx=10)
 
-        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("LoginFrame"))
+        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: self.switch_to_login())
         self.back_to_login_button.pack(pady=12, padx=10)
 
     def register(self):
@@ -73,3 +73,8 @@ class RegistrationFrame(ctk.CTkFrame):
     def validate_email(self, email):
         email_format = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return bool(re.match(email_format, email))
+    
+    def switch_to_login(self):
+        """Switch to the login frame and update the header."""
+        self.controller.add_header_label("Home")
+        self.controller.show_frame("LoginFrame")
