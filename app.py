@@ -16,14 +16,14 @@ class App(ctk.CTk):
         
         # Ensure consistent proportions by defining min sizes
         total_height = 600  # Total app height
-        header_height = int(total_height * 0.05)  # 20%
-        container_height = int(total_height * 0.9)  # 60%
-        footer_height = int(total_height * 0.05)  # 20%
+        header_height = int(total_height * 0.1)
+        container_height = int(total_height * 0.8)
+        footer_height = int(total_height * 0.1)
 
         # Configure grid layout for main window
-        self.grid_rowconfigure(0, weight=1, minsize=header_height)  # Header (20%)
-        self.grid_rowconfigure(1, weight=8, minsize=container_height)  # Container (60%)
-        self.grid_rowconfigure(2, weight=1, minsize=footer_height)  # Footer (20%)
+        self.grid_rowconfigure(0, weight=1, minsize=header_height)  # Header (10%)
+        self.grid_rowconfigure(1, weight=8, minsize=container_height)  # Container (80%)
+        self.grid_rowconfigure(2, weight=1, minsize=footer_height)  # Footer (10%)
         self.grid_columnconfigure(0, weight=1)  # Single column layout
 
         # Init frames
@@ -31,20 +31,17 @@ class App(ctk.CTk):
         self.container = ctk.CTkFrame(self, fg_color="white")
         self.footer = ctk.CTkFrame(self, fg_color="darkblue")
         
-        # Ensure frames do not shrink smaller than expected
         self.header.grid(row=0, column=0, sticky="nsew")
         self.container.grid(row=1, column=0, sticky="nsew")
         self.footer.grid(row=2, column=0, sticky="nsew")
         
-        # Force white background in case of UI issue
-        self.container.configure(fg_color="white")
+        # Add a label to the header
+        self.header_label = ctk.CTkLabel(self.header, text="Budget Buddy", font=("Arial", 24), text_color="white")
+        self.header_label.pack(pady=10)
 
         # Configure grid inside container
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
-
-        # Debugging (Check actual height allocation)
-        print(f"Expected Heights: Header={header_height}px, Container={container_height}px, Footer={footer_height}px")
         
         for F in (HomeFrame, RegistrationFrame):
             frame = F(database=self.budget_db, parent=self.container, controller=self)
@@ -57,3 +54,5 @@ class App(ctk.CTk):
         frame = self.frame[frame_name]
         frame.tkraise()
         
+    def add_header_label(self, text):
+        self.header_label.configure(text=text)
