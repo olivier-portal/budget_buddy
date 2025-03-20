@@ -10,15 +10,16 @@ class App(ctk.CTk):
         
         self.budget_db = Database()
         self.version = '1.0.0'
+        self.client = None
         
         self.frame = {} # Stock frames in dictionary
         
         # Init frames
-        container = ctk.CTkFrame(self)
-        container.pack(fill="both", expand=True)
+        self.container = ctk.CTkFrame(self)
+        self.container.pack(fill="both", expand=True)
         
-        for F in (LoginFrame, RegistrationFrame):
-            frame = F(database=self.budget_db, parent=container, controller=self)
+        for F in (LoginFrame, RegistrationFrame, OperationsListFrame):
+            frame = F(database=self.budget_db, parent=self.container, controller=self, client=self.client)
             self.frame[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
             
@@ -27,13 +28,13 @@ class App(ctk.CTk):
     def show_frame(self, frame_name):
         frame = self.frame[frame_name]
         frame.tkraise()
+        
     
 if __name__ == '__main__':
     app = App()
-    app.mainloop()
 
     if app.budget_db.database_exists():
-        app.run()
+        app.mainloop()
     else:
         app.budget_db = CreateDatabase()
         app.budget_db.create_database()
@@ -42,4 +43,4 @@ if __name__ == '__main__':
         app.budget_db.create_table_transaction()
         app.budget_db = Database()  # Reconnect to the newly created database
 
-        app.run()
+        app.mainloop()

@@ -5,12 +5,12 @@ import re
 from frames.login_frame import *
 
 class RegistrationFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller):
+    def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
-        
         self.database = database
+        self.client = client
         
         self.register_frame = ctk.CTkFrame(self)
         self.register_frame.pack(fill="both", expand=True)
@@ -46,7 +46,7 @@ class RegistrationFrame(ctk.CTkFrame):
 
         if self.database.add_user(last_name, first_name, email, password):
             messagebox.showinfo("Registration", "Registration successful!")
-            self.create_login_screen()
+            self.controller.show_frame("LoginFrame")
         else:
             messagebox.showerror("Registration", "Registration failed. Email may already be in use.")
 

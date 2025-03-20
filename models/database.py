@@ -55,11 +55,28 @@ class Database(ConnectDatabase):
                 cursor.execute("SELECT password FROM client WHERE email = %s", (email,))
                 result = cursor.fetchone()
                 if result and bcrypt.checkpw(password.encode('utf-8'), result[0].encode('utf-8')):
-                    user_id = cursor.lastrowid
                     return True
         except Error as e:
             print(f"Error verifying user: {e}")
             return False
+        
+    def get_client_by_email(self, email_client):
+        """
+        Get the client information by email.
+        :param email_client: The email of the client.
+        :return: The client information.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT id_client, last_name, first_name, email FROM client WHERE email = %s", (email_client,))
+                    client = cursor.fetchone()
+                    return client
+        except Error as e:
+            print(f"Error getting client by email: {e}")
+            return False
+
     
     def new_account(self, id_client):
         """
@@ -83,6 +100,24 @@ class Database(ConnectDatabase):
         except Error as e:
             print(f"Error creating new account: {e}")
             return False
+        
+    def update_account_amount(self, id_account, amount):
+        """
+        Update the amount of an account.
+        :param id_account: The ID of the account.
+        :param amount: The new amount of the account.
+        :return: ∅
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (amount, id_account))
+                    conn.commit()
+                    return True
+        except Error as e:
+            print(f"Error updating account amount: {e}")
+            return False
 
     def save_transaction(self, transaction_type, amount, id_origin_account, id_destination_account=None):
         """
@@ -105,3 +140,77 @@ class Database(ConnectDatabase):
         except Error as e:
             print(f"Error saving transaction: {e}")
             return False
+        
+    def get_transactions_by_account(self, id_account):
+        """
+        Get the transactions of an account.
+        :param id_account: The ID of the account.
+        :return: The transactions of the account.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT id_transaction, id_origin_account, id_destination_account, transaction_type, amount, transaction_date FROM transaction WHERE id_origin_account = %s OR id_destination_account = %s", (id_account, id_account))
+                    transactions = cursor.fetchall()
+                    return transactions
+        except Error as e:
+            print(f"Error getting transactions by account: {e}")
+            return False
+        
+    def get_account_by_iban(self, iban):
+        """
+        Get the account information by IBAN.
+        :param iban: The IBAN of the account.
+        :return: The account information.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT id_account, IBAN, amount, creation_date, id_client FROM account WHERE IBAN = %s", (iban,))
+                    account = cursor.fetchone()
+                    return account
+        except Error as e:
+            print(f"Error getting account by IBAN: {e}")
+            return False
+        
+    def get_client_accounts(self, id_client):
+        """
+        Get the accounts of a client.
+        :param id_client: The ID of the client.
+        :return: The accounts of the client.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT id_account, IBAN, amount, creation_date FROM account WHERE id_client = %s", (id_client,))
+                    accounts = cursor.fetchall()
+                    return accounts
+        except Error as e:
+            print(f"Error getting client accounts: {e}")
+            return False
+        
+    def get_client_transactions(self, id_client):
+        """
+        Get the transactions of a client.
+        :param id_client: The ID of the client.
+        :return: The transactions of the client.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        SELECT t.id_transaction, t.id_origin_account, t.id_destination_account, t.transaction_type, t.amount, t.transaction_date
+                        FROM transaction t
+                        JOIN account a ON t.id_origin_account = a.id_account
+                        WHERE a.id_client = %s
+                        JION account b ON t.id_destination_account = b.id_account
+                        WHERE b.id_client = %s
+                    """, (id_client,))
+                    transactions = cursor.fetchall()
+                    return transactions
+        except Error as e:
+            print(f"Error getting client transactions: {e}")

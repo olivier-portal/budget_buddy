@@ -2,12 +2,12 @@ import customtkinter as ctk
 from tkinter import messagebox
 
 class LoginFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller):
+    def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
-        
         self.database = database
+        self.client = client
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -23,7 +23,7 @@ class LoginFrame(ctk.CTkFrame):
         self.login_button = ctk.CTkButton(self.login_frame, text="Login", command=self.login)
         self.login_button.grid(row=2, column=0, sticky="nsew", pady=5, padx=5)
 
-        self.register_button = ctk.CTkButton(self.login_frame, text="Register", command=lambda: controller.show_frame("RegistrationFrame"))
+        self.register_button = ctk.CTkButton(self.login_frame, text="Register", command=lambda: self.controller.show_frame("RegistrationFrame"))
         self.register_button.grid(row=3, column=0, sticky="nsew", pady=5, padx=5)
 
     def login(self):
@@ -31,7 +31,11 @@ class LoginFrame(ctk.CTkFrame):
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
             messagebox.showinfo("Login", "Login successful!")
-            self.create_main_screen()
+            self.client = self.database.get_client_by_email(email)
+            print(self.client)
+            self.controller.show_frame("OperationsListFrame")
+            print(self.client)
+            return self.client
         else:
             messagebox.showerror("Login", "Invalid email or password")
     
