@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from frames import *
 from models import *
+from frames.frame_manager import FrameManager
 
 class App(ctk.CTk):
     def __init__(self):
@@ -13,6 +14,9 @@ class App(ctk.CTk):
         self.client = None
         
         self.frame = {} # Stock frames in dictionary
+        
+        #Use FrameManager to switch between frames
+        self.frame_manager = FrameManager(self)
         
         # Ensure consistent proportions by defining min sizes
         total_height = 600  # Total app height
@@ -38,6 +42,10 @@ class App(ctk.CTk):
         # Add a label to the header
         self.header_label = ctk.CTkLabel(self.header, text="Budget Buddy", font=("Arial", 24), text_color="white")
         self.header_label.pack(pady=10)
+        
+        # Add buttons to the footer
+        self.login_button = ctk.CTkButton(self.footer, text="Login", command=lambda: self.frame_manager.switch_to_login())
+        self.login_button.pack(side="left", padx=10)
 
         # Configure grid inside container
         self.container.grid_rowconfigure(0, weight=1)

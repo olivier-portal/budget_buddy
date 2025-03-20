@@ -1,13 +1,17 @@
 import customtkinter as ctk
 from tkinter import messagebox
+from frames.frame_manager import *
 
-class LoginFrame(ctk.CTkFrame):
+class LoginFrame(ctk.CTkFrame, FrameManager):
     def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        
+        #Use FrameManager to switch between frames
+        self.frame_manager = FrameManager(controller)
         
         # define label in header
         self.controller.add_header_label("Home")
@@ -52,14 +56,4 @@ class LoginFrame(ctk.CTkFrame):
             return self.client
         else:
             messagebox.showerror("Login", "Invalid email or password")
-            
-    def switch_to_registration(self):
-        """Switch to the registration frame and update the header."""
-        self.controller.add_header_label("Register")
-        self.controller.show_frame("RegistrationFrame")
-        
-    def switch_to_dashboard(self):
-        """Switch to the registration frame and update the header."""
-        self.controller.add_header_label("Dasboard")
-        self.controller.show_frame("DashboardFrame")
     

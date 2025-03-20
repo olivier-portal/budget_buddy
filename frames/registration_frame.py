@@ -3,14 +3,18 @@ from tkinter import messagebox
 import re
 
 from frames.login_frame import *
+from frames.frame_manager import *
 
-class RegistrationFrame(ctk.CTkFrame):
+class RegistrationFrame(ctk.CTkFrame, FrameManager):
     def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        
+        #Use FrameManager to switch between frames
+        self.frame_manager = FrameManager(controller)
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -73,8 +77,3 @@ class RegistrationFrame(ctk.CTkFrame):
     def validate_email(self, email):
         email_format = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return bool(re.match(email_format, email))
-    
-    def switch_to_login(self):
-        """Switch to the login frame and update the header."""
-        self.controller.add_header_label("Home")
-        self.controller.show_frame("LoginFrame")
