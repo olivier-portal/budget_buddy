@@ -1,12 +1,13 @@
 import customtkinter as ctk
 from tkinter import messagebox
 
-class HomeFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller):
+class LoginFrame(ctk.CTkFrame):
+    def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
+        self.client = client
         
         # define label in header
         self.controller.add_header_label("Home")
@@ -36,15 +37,19 @@ class HomeFrame(ctk.CTkFrame):
         self.login_button = ctk.CTkButton(self.inner_frame, text="Login", command=self.login)
         self.login_button.pack(padx=20, pady=20)
 
-        self.register_button = ctk.CTkButton(self.inner_frame, text="Register", command=lambda: self.switch_to_registration())
+        self.register_button = ctk.CTkButton(self.inner_frame, text="Register",  command=lambda: self.controller.show_frame("RegistrationFrame"))
         self.register_button.pack(padx=20, pady=20)
 
     def login(self):
         email = self.email_entry.get()
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
-            messagebox.showinfo("Login", f"Login successful! Welcome {email}")
-            self.switch_to_registration()
+            self.client = self.database.get_client_by_email(email)
+            messagebox.showinfo("Login", f"Login successful! Welcome {self.client[2]}")
+            print(self.client)
+            self.switch_to_dashboard()
+            print(self.client)
+            return self.client
         else:
             messagebox.showerror("Login", "Invalid email or password")
             
@@ -52,4 +57,9 @@ class HomeFrame(ctk.CTkFrame):
         """Switch to the registration frame and update the header."""
         self.controller.add_header_label("Register")
         self.controller.show_frame("RegistrationFrame")
+        
+    def switch_to_dashboard(self):
+        """Switch to the registration frame and update the header."""
+        self.controller.add_header_label("Dasboard")
+        self.controller.show_frame("DashboardFrame")
     

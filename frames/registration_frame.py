@@ -2,14 +2,15 @@ import customtkinter as ctk
 from tkinter import messagebox
 import re
 
-from frames.home_frame import *
+from frames.login_frame import *
 
 class RegistrationFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller):
+    def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
+        self.client = client
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -22,10 +23,10 @@ class RegistrationFrame(ctk.CTkFrame):
         
         # Create a container inside login_frame to hold widgets
         self.inner_frame = ctk.CTkFrame(self.register_frame, fg_color="white")
-        self.inner_frame.pack(expand=True, padx=20, pady=20)
+        self.inner_frame.pack(expand=True, padx=20, pady=10)
         
         self.label = ctk.CTkLabel(self.inner_frame, text="Create an account", font=("Arial", 24))
-        self.label.pack(padx=20, pady=20)
+        self.label.pack(padx=10, pady=10)
 
         self.last_name_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Last Name")
         self.last_name_entry.pack(pady=12, padx=10)
@@ -42,7 +43,7 @@ class RegistrationFrame(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(self.register_frame, text="Register", command=self.register)
         self.register_button.pack(pady=12, padx=10)
 
-        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("HomeFrame"))
+        self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: controller.show_frame("LoginFrame"))
         self.back_to_login_button.pack(pady=12, padx=10)
 
     def register(self):
@@ -61,14 +62,14 @@ class RegistrationFrame(ctk.CTkFrame):
 
         if self.database.add_user(last_name, first_name, email, password):
             messagebox.showinfo("Registration", "Registration successful!")
-            self.create_login_screen()
+            self.controller.show_frame("LoginFrame")
         else:
             messagebox.showerror("Registration", "Registration failed. Email may already be in use.")
 
     def validate_password(self, password):
         password_format = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{10,}$'
         return bool(re.match(password_format, password))
-    
+
     def validate_email(self, email):
         email_format = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return bool(re.match(email_format, email))

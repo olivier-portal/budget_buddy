@@ -55,7 +55,7 @@ class CreateDatabase(ConnectDatabase):
                         id_account INT AUTO_INCREMENT,
                         IBAN CHAR(34) NOT NULL,
                         amount DECIMAL(12,2) NOT NULL,
-                        creation_date DATE NOT NULL,
+                        creation_date DATETIME NOT NULL,
                         id_client INT NOT NULL,
                         PRIMARY KEY(id_account),
                         UNIQUE(IBAN),
@@ -79,7 +79,7 @@ class CreateDatabase(ConnectDatabase):
                         id_target_account INT NULL,
                         amount DECIMAL(10, 2) NOT NULL,
                         transaction_type VARCHAR(20) NOT NULL,
-                        transaction_date TIMESTAMP,
+                        transaction_date DATETIME NOT NULL,
                         PRIMARY KEY(id_transaction),
                         FOREIGN KEY (id_origin_account) REFERENCES account(id_account),
                         FOREIGN KEY (id_target_account) REFERENCES account(id_account)
