@@ -4,7 +4,7 @@ import re
 
 from frames.login_frame import *
 
-class DashboardFrame(ctk.CTkFrame):
+class AccountsFrame(ctk.CTkFrame):
     def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
@@ -38,3 +38,7 @@ class DashboardFrame(ctk.CTkFrame):
         self.client = None
         self.controller.show_frame("LoginFrame")
         print(self.client)
+       
+
+    def display_if_type(self, type):
+        pass
