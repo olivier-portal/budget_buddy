@@ -1,16 +1,18 @@
 import customtkinter as ctk
-from tkinter import messagebox
-import re
 
+from frames.frame_manager import *
 from frames.login_frame import *
 
-class DashboardFrame(ctk.CTkFrame):
+class DashboardFrame(ctk.CTkFrame, FrameManager):
     def __init__(self, database, parent, controller, client):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        
+        #Use FrameManager to switch between frames
+        self.frame_manager = FrameManager(controller)
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
@@ -36,5 +38,5 @@ class DashboardFrame(ctk.CTkFrame):
 
     def logout(self):
         self.client = None
-        self.controller.show_frame("LoginFrame")
+        self.switch_to_login()
         print(self.client)
