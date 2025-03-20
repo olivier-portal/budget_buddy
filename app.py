@@ -1,6 +1,5 @@
 import customtkinter as ctk
-from frames.home_frame import HomeFrame
-from frames.registration_frame import RegistrationFrame
+from frames import *
 from models import *
 
 class App(ctk.CTk):
@@ -11,6 +10,7 @@ class App(ctk.CTk):
         
         self.budget_db = Database()
         self.version = '1.0.0'
+        self.client = None
         
         self.frame = {} # Stock frames in dictionary
         
@@ -43,12 +43,12 @@ class App(ctk.CTk):
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
         
-        for F in (HomeFrame, RegistrationFrame):
-            frame = F(database=self.budget_db, parent=self.container, controller=self)
+        for F in (LoginFrame, RegistrationFrame, OperationsListFrame, DashboardFrame):
+            frame = F(database=self.budget_db, parent=self.container, controller=self, client=self.client)
             self.frame[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
             
-        self.show_frame("HomeFrame")
+        self.show_frame("LoginFrame")
         
     def show_frame(self, frame_name):
         frame = self.frame[frame_name]
@@ -56,3 +56,18 @@ class App(ctk.CTk):
         
     def add_header_label(self, text):
         self.header_label.configure(text=text)
+    
+if __name__ == '__main__':
+    app = App()
+
+    if app.budget_db.database_exists():
+        app.mainloop()
+    else:
+        app.budget_db = CreateDatabase()
+        app.budget_db.create_database()
+        app.budget_db.create_table_client()
+        app.budget_db.create_table_account()
+        app.budget_db.create_table_transaction()
+        app.budget_db = Database()  # Reconnect to the newly created database
+
+        app.mainloop()
