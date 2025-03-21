@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import re
+from PIL import Image
 
 from frames.login_frame import *
 from frames.frame_manager import *
@@ -12,6 +13,9 @@ class RegistrationFrame(ctk.CTkFrame, FrameManager):
         self.controller = controller
         self.database = database
         self.client = client
+        
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        LOGO_PATH = os.path.join(BASE_DIR, "assets", "icons", "Logo.png")
         
         #Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
@@ -28,6 +32,11 @@ class RegistrationFrame(ctk.CTkFrame, FrameManager):
         # Create a container inside login_frame to hold widgets
         self.inner_frame = ctk.CTkFrame(self.register_frame, fg_color="white")
         self.inner_frame.pack(expand=True, padx=20, pady=10)
+        
+        image = Image.open(LOGO_PATH)
+        self.my_image = ctk.CTkImage(light_image=image, dark_image=image, size=(180, 180))
+        self.image_label = ctk.CTkLabel(self.inner_frame, image=self.my_image, text="")
+        self.image_label.pack(pady=10)
         
         self.label = ctk.CTkLabel(self.inner_frame, text="Create an account", font=("Arial", 24))
         self.label.pack(padx=10, pady=10)

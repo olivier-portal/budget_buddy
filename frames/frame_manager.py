@@ -20,3 +20,8 @@ class FrameManager():
         """Switch to the registration frame and update the header."""
         self.controller.add_header_label("Dasboard")
         self.controller.show_frame("DashboardFrame")
+        
+    def switch_to_accounts(self):
+        """Switch to the accounts frame and update the header."""
+        self.controller.add_header_label("Accounts")
+        self.controller.show_frame("AccountsFrame")
