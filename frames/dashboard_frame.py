@@ -32,12 +32,15 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         
         self.inner_frame.grid_rowconfigure(0, weight=1)
         self.inner_frame.grid_columnconfigure(0, weight=1)
-        
-        self.label = ctk.CTkLabel(self.inner_frame, text="Dashboard", font=("Arial", 24))
-        self.label.pack(padx=20, pady=20)
 
         # Add widgets to the frame
-        """"""
+        # self.label = ctk.CTkLabel(self.inner_frame, text="Dashboard", font=("Arial", 24))
+        # self.label.pack(padx=20, pady=20)
+        
+        self.textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
+        self.textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+        self.textbox.insert("0.0", "Some example text!\n" * 50, "top")
+        
         self.new_transaction_button = ctk.CTkButton(self.dashboard_frame, text="New transaction", height=40, command=None)
         self.new_transaction_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
