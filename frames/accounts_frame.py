@@ -5,12 +5,13 @@ import re
 from frames.login_frame import *
 
 class AccountsFrame(ctk.CTkFrame):
-    def __init__(self, database, parent, controller, client):
+    def __init__(self, database, parent, controller, client, selected_account):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        self.selected_account = selected_account
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
         self.grid_columnconfigure(0, weight=1)
