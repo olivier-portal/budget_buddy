@@ -89,16 +89,16 @@ class App(ctk.CTk):
         self.header_label.configure(text=text)
     
 if __name__ == '__main__':
-    app = App()
+    controller = App()
 
-    if app.budget_db.database_exists():
-        app.mainloop()
+    if controller.budget_db.database_exists():
+        controller.mainloop()
     else:
-        app.budget_db = CreateDatabase()
-        app.budget_db.create_database()
-        app.budget_db.create_table_client()
-        app.budget_db.create_table_account()
-        app.budget_db.create_table_transaction()
-        app.budget_db = Database()  # Reconnect to the newly created database
+        controller.budget_db = CreateDatabase()
+        controller.budget_db.create_database()
+        controller.budget_db.create_table_client()
+        controller.budget_db.create_table_account()
+        controller.budget_db.create_table_transaction()
+        controller.budget_db = Database()  # Reconnect to the newly created database
 
-        app.mainloop()
+        controller.mainloop()

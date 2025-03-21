@@ -41,7 +41,7 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
         self.textbox.insert("0.0", "Some example text!\n" * 50, "top")
         
-        self.new_transaction_button = ctk.CTkButton(self.dashboard_frame, text="New transaction", height=40, command=None)
+        self.new_transaction_button = ctk.CTkButton(self.dashboard_frame, text="New transaction", height=40, command=lambda: self.switch_to_new_transaction())
         self.new_transaction_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 
         self.back_to_login_button = ctk.CTkButton(self.dashboard_frame, text="Logout", height=40, command=self.logout)
