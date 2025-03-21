@@ -34,6 +34,9 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         # Add widgets to the frame
         """"""
 
+        self.new_transactionbutton = ctk.CTkButton(self.inner_frame, text="New Transaction",  command=lambda: self.switch_to_new_transaction())
+        self.new_transactionbutton.pack(padx=20, pady=20)
+
         self.back_to_login_button = ctk.CTkButton(self.dashboard_frame, text="Logout", command=self.logout)
         self.back_to_login_button.pack(pady=12, padx=10)
 

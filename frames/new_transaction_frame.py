@@ -34,21 +34,21 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.label.grid(row=0, column=0, pady=10, padx=10)
 
         self.origin_label = ctk.CTkLabel(self.register_frame, text="From Bank Account")
-        self.origin_label.grid(row=1, column=0, pady=5, padx=10)
+        self.origin_label.grid(row=1, column=0, pady=0, padx=10)
 
         self.origin_var = ctk.StringVar(self)
         self.origin_menu = ctk.CTkOptionMenu(self.register_frame, variable=self.origin_var, values=self.client_accounts)
         self.origin_menu.grid(row=2, column=0, pady=5, padx=10)
 
         self.type_label = ctk.CTkLabel(self.register_frame, text="Transaction Type")
-        self.type_label.grid(row=3, column=0, pady=5, padx=10)
+        self.type_label.grid(row=3, column=0, pady=0, padx=10)
 
         self.type_var = ctk.StringVar(self)
         self.type_menu = ctk.CTkOptionMenu(self.register_frame, variable=self.type_var, values=["deposit", "withdrawal", "transfer"])
         self.type_menu.grid(row=4, column=0, pady=5, padx=10)
 
         self.target_label = ctk.CTkLabel(self.register_frame, text="To Bank Account")
-        self.target_label.grid(row=5, column=0, pady=5, padx=10)
+        self.target_label.grid(row=5, column=0, pady=0, padx=10)
 
         self.target_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Target Account")
         self.target_entry.grid(row=6, column=0, pady=5, padx=10)
@@ -56,7 +56,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.amount_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Transaction Amount")
         self.amount_entry.grid(row=7, column=0, pady=5, padx=10)
 
-        self.confirm_button = ctk.CTkButton(self.register_frame, text="Register", command=self.confirm_transaction)
+        self.confirm_button = ctk.CTkButton(self.register_frame, text="Confirm", command=self.confirm_transaction)
         self.confirm_button.grid(row=8, column=0, pady=5, padx=10)
 
         self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: self.switch_to_login())
