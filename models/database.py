@@ -78,7 +78,7 @@ class Database(ConnectDatabase):
             return False
 
     
-    def new_account(self, id_client):
+    def create_account(self, id_client):
         """
         Create a new account for a client with an initial amount of 0, 
         the current date as the creation date, and a unique IBAN.
@@ -101,7 +101,7 @@ class Database(ConnectDatabase):
             print(f"Error creating new account: {e}")
             return False
         
-    def update_account_amount(self, id_account, amount):
+    def update_account_balance(self, iban_account, amount):
         """
         Update the amount of an account.
         :param id_account: The ID of the account.
@@ -112,7 +112,7 @@ class Database(ConnectDatabase):
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (amount, id_account))
+                    cursor.execute("UPDATE account SET amount = %s WHERE IBAN = %s", (amount, iban_account))
                     conn.commit()
                     return True
         except Error as e:
@@ -217,7 +217,7 @@ class Database(ConnectDatabase):
 
 if __name__ == '__main__':
     db = Database()
-    # db.new_account(1)
+    # db.create_account(1)
     print(db.database_exists())
     print(db.get_client_ibans(1))
     print(db.get_account_by_iban('R6IW5M0E8B2AK7OOIQZ4I5NF4JN0ZSL79N'))
