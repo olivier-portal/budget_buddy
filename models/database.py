@@ -78,7 +78,7 @@ class Database(ConnectDatabase):
             return False
 
     
-    def new_account(self, id_client):
+    def create_account(self, id_client):
         """
         Create a new account for a client with an initial amount of 0, 
         the current date as the creation date, and a unique IBAN.
@@ -101,7 +101,7 @@ class Database(ConnectDatabase):
             print(f"Error creating new account: {e}")
             return False
         
-    def update_account_amount(self, id_account, amount):
+    def update_account_balance(self, iban_account, amount):
         """
         Update the amount of an account.
         :param id_account: The ID of the account.
@@ -112,7 +112,7 @@ class Database(ConnectDatabase):
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (amount, id_account))
+                    cursor.execute("UPDATE account SET amount = %s WHERE IBAN = %s", (amount, iban_account))
                     conn.commit()
                     return True
         except Error as e:
@@ -175,22 +175,22 @@ class Database(ConnectDatabase):
             print(f"Error getting account by IBAN: {e}")
             return False
         
-    def get_client_accounts(self, id_client):
+    def get_client_ibans(self, id_client):
         """
-        Get the accounts of a client.
+        Get the accounts IBANs of a client.
         :param id_client: The ID of the client.
-        :return: The accounts of the client.
+        :return: List of IBANs.
         """
         try:
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    cursor.execute("SELECT id_account, IBAN, amount, creation_date FROM account WHERE id_client = %s", (id_client,))
-                    accounts = cursor.fetchall()
-                    return accounts
+                    cursor.execute("SELECT IBAN FROM account WHERE id_client = %s", (id_client,))
+                    client_ibans = cursor.fetchall()
+                    return client_ibans
         except Error as e:
             print(f"Error getting client accounts: {e}")
-            return False
+            return []
         
     def get_client_transactions(self, id_client):
         """
@@ -207,10 +207,18 @@ class Database(ConnectDatabase):
                         FROM transaction t
                         JOIN account a ON t.id_origin_account = a.id_account
                         WHERE a.id_client = %s
-                        JION account b ON t.id_destination_account = b.id_account
+                        JOIN account b ON t.id_destination_account = b.id_account
                         WHERE b.id_client = %s
-                    """, (id_client,))
+                    """, (id_client))
                     transactions = cursor.fetchall()
                     return transactions
         except Error as e:
             print(f"Error getting client transactions: {e}")
+
+if __name__ == '__main__':
+    db = Database()
+    # db.create_account(1)
+    print(db.database_exists())
+    print(db.get_client_ibans(1))
+    print(db.get_account_by_iban('R6IW5M0E8B2AK7OOIQZ4I5NF4JN0ZSL79N'))
+    # print(db.get_client_transactions(1))
