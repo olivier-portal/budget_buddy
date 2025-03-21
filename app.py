@@ -5,6 +5,7 @@ from frames.frame_manager import FrameManager
 from PIL import Image
 import os
 
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -19,9 +20,9 @@ class App(ctk.CTk):
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         ICON_PATH = os.path.join(BASE_DIR, "assets", "icons")
         
-        self.frame = {} # Stock frames in dictionary
+        self.frame = {}  # Stock frames in dictionary
         
-        #Use FrameManager to switch between frames
+        # Use FrameManager to switch between frames
         self.frame_manager = FrameManager(self)
         
         # Ensure consistent proportions by defining min sizes
@@ -87,7 +88,8 @@ class App(ctk.CTk):
         
     def add_header_label(self, text):
         self.header_label.configure(text=text)
-    
+
+
 if __name__ == '__main__':
     app = App()
 
