@@ -14,6 +14,7 @@ class App(ctk.CTk):
         self.budget_db = Database()
         self.version = '1.0.0'
         self.client = None
+        self.selected_account = None
         
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
         ICON_PATH = os.path.join(BASE_DIR, "assets", "icons")
@@ -73,8 +74,8 @@ class App(ctk.CTk):
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
         
-        for F in (LoginFrame, RegistrationFrame, DashboardFrame, AccountsFrame):
-            frame = F(database=self.budget_db, parent=self.container, controller=self, client=self.client)
+        for F in (LoginFrame, RegistrationFrame, DashboardFrame, AccountsFrame, NewTransactionFrame):
+            frame = F(database=self.budget_db, parent=self.container, controller=self, client=self.client, selected_account=self.selected_account)
             self.frame[F.__name__] = frame
             frame.grid(row=0, column=0, sticky="nsew")
             

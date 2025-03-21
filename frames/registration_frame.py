@@ -7,12 +7,11 @@ from frames.login_frame import *
 from frames.frame_manager import *
 
 class RegistrationFrame(ctk.CTkFrame, FrameManager):
-    def __init__(self, database, parent, controller, client):
+    def __init__(self, database, parent, controller, client, selected_account):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
-        self.client = client
         
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         LOGO_PATH = os.path.join(BASE_DIR, "assets", "icons", "Logo.png")

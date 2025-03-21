@@ -4,12 +4,13 @@ from frames.frame_manager import *
 from frames.login_frame import *
 
 class DashboardFrame(ctk.CTkFrame, FrameManager):
-    def __init__(self, database, parent, controller, client):
+    def __init__(self, database, parent, controller, client, selected_account):
         super().__init__(parent)
         
         self.controller = controller
         self.database = database
         self.client = client
+        self.selected_account = selected_account
         
         #Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
