@@ -12,7 +12,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.database = database
         self.client = client
         self.selected_account = selected_account
-        self.client_accounts = self.get_client_accounts()
+        self.client_accounts = self.controller.get_client_accounts()
 
         # Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
@@ -34,21 +34,21 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.label.grid(row=0, column=0, pady=10, padx=10)
 
         self.origin_label = ctk.CTkLabel(self.register_frame, text="From Bank Account")
-        self.origin_label.grid(row=1, column=0, pady=5, padx=10)
+        self.origin_label.grid(row=1, column=0, pady=0, padx=10)
 
         self.origin_var = ctk.StringVar(self)
         self.origin_menu = ctk.CTkOptionMenu(self.register_frame, variable=self.origin_var, values=self.client_accounts)
         self.origin_menu.grid(row=2, column=0, pady=5, padx=10)
 
         self.type_label = ctk.CTkLabel(self.register_frame, text="Transaction Type")
-        self.type_label.grid(row=3, column=0, pady=5, padx=10)
+        self.type_label.grid(row=3, column=0, pady=0, padx=10)
 
         self.type_var = ctk.StringVar(self)
         self.type_menu = ctk.CTkOptionMenu(self.register_frame, variable=self.type_var, values=["deposit", "withdrawal", "transfer"])
         self.type_menu.grid(row=4, column=0, pady=5, padx=10)
 
         self.target_label = ctk.CTkLabel(self.register_frame, text="To Bank Account")
-        self.target_label.grid(row=5, column=0, pady=5, padx=10)
+        self.target_label.grid(row=5, column=0, pady=0, padx=10)
 
         self.target_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Target Account")
         self.target_entry.grid(row=6, column=0, pady=5, padx=10)
@@ -56,7 +56,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.amount_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Transaction Amount")
         self.amount_entry.grid(row=7, column=0, pady=5, padx=10)
 
-        self.confirm_button = ctk.CTkButton(self.register_frame, text="Register", command=self.confirm_transaction)
+        self.confirm_button = ctk.CTkButton(self.register_frame, text="Confirm", command=self.confirm_transaction)
         self.confirm_button.grid(row=8, column=0, pady=5, padx=10)
 
         self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: self.switch_to_login())
@@ -120,13 +120,11 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         account = self.database.get_account_by_iban(target)
         return account is not None
 
-    def get_client_accounts(self):
+    def update_client_data(self):
         """
-        Fetch the IBANs of the client's accounts from the database.
-        :return: List of IBANs.
+        Update the client data and refresh client accounts.
         """
-        if self.client:
-            accounts = self.database.get_client_ibans(self.client[0])
-            return [account[0] for account in accounts] if accounts else []
-        return []
-
+        self.client = self.controller.client
+        self.client_accounts = self.controller.get_client_accounts()
+        self.origin_menu.configure(values=self.client_accounts)  # Update the dropdown menu
+        print(f"Updated client in NewTransactionFrame: {self.client}")

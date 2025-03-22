@@ -62,11 +62,8 @@ class LoginFrame(ctk.CTkFrame, FrameManager):
         password = self.password_entry.get()
         if self.database.verify_user(email, password):
             self.client = self.database.get_client_by_email(email)
+            self.controller.set_client(self.client)  # Update the client in the App class
             messagebox.showinfo("Login", f"Login successful! Welcome {self.client[2]}")
-            print(self.client)
             self.switch_to_dashboard()
-            print(self.client)
-            return self.client
         else:
             messagebox.showerror("Login", "Invalid email or password")
-    
