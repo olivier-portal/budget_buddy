@@ -31,11 +31,26 @@ class AccountsFrame(ctk.CTkFrame):
         self.label.pack(padx=20, pady=20)
 
         # Add widgets to the frame
-        """"""
+        self.add_account_button = ctk.CTkButton(self.dashboard_frame, text="Add Account", command=self.add_account)
+        self.add_account_button.pack(pady=12, padx=10)
 
         self.back_to_login_button = ctk.CTkButton(self.dashboard_frame, text="Logout", command=self.logout)
         self.back_to_login_button.pack(pady=12, padx=10)
 
+    def add_account(self):
+        """
+        Add a new account for the current client.
+        """
+        if self.client:
+            success = self.database.create_account(self.client[0])
+            if success:
+                messagebox.showinfo("Add Account", "Account successfully created!")
+                self.update_client_data()  # Refresh client accounts
+            else:
+                messagebox.showerror("Add Account", "Failed to create account.")
+        else:
+            messagebox.showerror("Add Account", "No client is logged in.")
+        
     def update_client_data(self):
         """
         Update the client data.
@@ -47,7 +62,3 @@ class AccountsFrame(ctk.CTkFrame):
         self.client = None
         self.controller.show_frame("LoginFrame")
         print(self.client)
-       
-
-    def display_if_type(self, type):
-        pass
