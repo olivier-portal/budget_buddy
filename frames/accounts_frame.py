@@ -27,7 +27,7 @@ class AccountsFrame(ctk.CTkFrame):
         self.inner_frame = ctk.CTkFrame(self.dashboard_frame, fg_color="white")
         self.inner_frame.pack(expand=True, padx=20, pady=20)
         
-        self.label = ctk.CTkLabel(self.inner_frame, text="Dashboard", font=("Arial", 24))
+        self.label = ctk.CTkLabel(self.inner_frame, text="Accounts", font=("Arial", 24))
         self.label.pack(padx=20, pady=20)
 
         # Add widgets to the frame
