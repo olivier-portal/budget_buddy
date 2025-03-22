@@ -11,6 +11,7 @@ class AccountsFrame(ctk.CTkFrame):
         self.controller = controller
         self.database = database
         self.client = client
+        self.client_accounts = self.controller.get_client_accounts()
         self.selected_account = selected_account
         
         self.grid_rowconfigure(0, weight=1)  # configure grid system
@@ -34,6 +35,13 @@ class AccountsFrame(ctk.CTkFrame):
 
         self.back_to_login_button = ctk.CTkButton(self.dashboard_frame, text="Logout", command=self.logout)
         self.back_to_login_button.pack(pady=12, padx=10)
+
+    def update_client_data(self):
+        """
+        Update the client data.
+        """
+        self.client = self.controller.client
+        self.client_accounts = self.controller.get_client_accounts()
 
     def logout(self):
         self.client = None

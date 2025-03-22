@@ -12,9 +12,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.database = database
         self.client = client
         self.selected_account = selected_account
-        self.client_accounts = self.get_client_accounts()
-        print(client)
-        print(self.controller.frame['LoginFrame'].client)
+        self.client_accounts = self.controller.get_client_accounts()
 
         # Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
@@ -122,13 +120,11 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         account = self.database.get_account_by_iban(target)
         return account is not None
 
-    def get_client_accounts(self):
+    def update_client_data(self):
         """
-        Fetch the IBANs of the client's accounts from the database.
-        :return: List of IBANs.
+        Update the client data and refresh client accounts.
         """
-        if self.client:
-            accounts = self.database.get_client_ibans(self.client[0])
-            return [account[0] for account in accounts] if accounts else []
-        return []
-
+        self.client = self.controller.client
+        self.client_accounts = self.controller.get_client_accounts()
+        self.origin_menu.configure(values=self.client_accounts)  # Update the dropdown menu
+        print(f"Updated client in NewTransactionFrame: {self.client}")
