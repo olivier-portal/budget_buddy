@@ -203,11 +203,11 @@ class Database(ConnectDatabase):
                 if conn:
                     cursor = conn.cursor()
                     cursor.execute("""
-                        SELECT t.id_transaction, t.id_origin_account, t.id_destination_account, t.transaction_type, t.amount, t.transaction_date
+                        SELECT t.id_transaction, t.id_origin_account, t.id_target_account, t.transaction_type, t.amount, t.transaction_date
                         FROM transaction t
                         JOIN account a ON t.id_origin_account = a.id_account
                         WHERE a.id_client = %s
-                        JOIN account b ON t.id_destination_account = b.id_account
+                        JOIN account b ON t.id_target_account = b.id_account
                         WHERE b.id_client = %s
                     """, (id_client))
                     transactions = cursor.fetchall()
