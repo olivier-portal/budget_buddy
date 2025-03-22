@@ -11,6 +11,7 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.database = database
         self.client = client
         self.selected_account = selected_account
+        print(client)
         
         #Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
@@ -51,3 +52,10 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.client = None
         self.switch_to_login()
         print(self.client)
+
+    def update_client_data(self):
+        """
+        Update the client data.
+        """
+        self.client = self.controller.client
+        self.client_accounts = self.controller.get_client_accounts()
