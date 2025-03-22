@@ -13,6 +13,8 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.client = client
         self.selected_account = selected_account
         self.client_accounts = self.get_client_accounts()
+        print(client)
+        print(self.controller.frame['LoginFrame'].client)
 
         # Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
