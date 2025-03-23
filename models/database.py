@@ -112,12 +112,11 @@ class Database(ConnectDatabase):
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    # Retrieve the current balance
                     cursor.execute("SELECT amount FROM account WHERE id_account = %s", (id_account,))
                     current_balance = cursor.fetchone()
 
                     if current_balance is not None:
-                        current_balance = current_balance[0]  # Extract the decimal value
+                        current_balance = current_balance[0]  # Extract the decimal value from the tuple
                         print(f"Current balance: {current_balance} (type: {type(current_balance)})")
                     else:
                         print("Account not found.")
@@ -125,7 +124,6 @@ class Database(ConnectDatabase):
                     
                     current_balance = current_balance + amount
 
-                    # Update the account with the new balance
                     cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (current_balance, id_account))
                     conn.commit()
                     return True
@@ -221,7 +219,7 @@ class Database(ConnectDatabase):
                         FROM transaction t
                         JOIN account a ON t.id_origin_account = a.id_account
                         WHERE a.id_client = %s
-                    """, (id_client,))  # Add trailing comma to make it a tuple
+                    """, (id_client,))
                     transactions = cursor.fetchall()
                     return transactions
         except Error as e:

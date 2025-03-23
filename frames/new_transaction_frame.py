@@ -110,7 +110,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         :param target: The target account ID.
         """
         try:
-            amount = Decimal(amount)  # Convert amount to Decimal for precise arithmetic
+            amount = Decimal(amount)
             if transaction_type == "transfer":
                 # Deduct from source and add to target
                 if not self.database.update_account_balance(source, -amount):
@@ -138,18 +138,9 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         :return: True if valid, False otherwise.
         """
         try:
-            return Decimal(amount) > 0  # Convert to Decimal for validation
+            return Decimal(amount) > 0
         except (ValueError, InvalidOperation):
             return False
-        
-    def validate_target(self, target):
-        """
-        Validate if the target account exists.
-        :param target: The target account (IBAN) to validate.
-        :return: True if the account exists, False otherwise.
-        """
-        account = self.database.get_account_by_iban(target)
-        return account is not None
 
     def update_client_data(self):
         """
