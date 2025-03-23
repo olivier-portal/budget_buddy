@@ -101,10 +101,10 @@ class Database(ConnectDatabase):
             print(f"Error creating new account: {e}")
             return False
         
-    def update_account_balance(self, iban_account, amount):
+    def update_account_balance(self, id_account, amount):
         """
         Update the balance of an account by adding the provided amount.
-        :param iban_account: The IBAN of the account.
+        :param id_account: The ID of the account.
         :param amount: The amount to add to the account balance.
         :return: True if the update is successful, False otherwise.
         """
@@ -112,21 +112,19 @@ class Database(ConnectDatabase):
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    # Retrieve the current balance
-                    cursor.execute("SELECT amount FROM account WHERE IBAN = %s", (iban_account,))
+                    cursor.execute("SELECT amount FROM account WHERE id_account = %s", (id_account,))
                     current_balance = cursor.fetchone()
 
                     if current_balance is not None:
-                        current_balance = current_balance[0]  # Extract the decimal value
-                        print(f"Current balance: {current_balance}")
+                        current_balance = current_balance[0]  # Extract the decimal value from the tuple
+                        print(f"Current balance: {current_balance} (type: {type(current_balance)})")
                     else:
                         print("Account not found.")
+                        return False
                     
-                    # Calculate the new balance
-                    new_balance = current_balance[0] + amount
+                    current_balance = current_balance + amount
 
-                    # Update the account with the new balance
-                    cursor.execute("UPDATE account SET amount = %s WHERE IBAN = %s", (new_balance, iban_account))
+                    cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (current_balance, id_account))
                     conn.commit()
                     return True
         except Error as e:
@@ -176,7 +174,7 @@ class Database(ConnectDatabase):
         """
         Get the account information by IBAN.
         :param iban: The IBAN of the account.
-        :return: The account information.
+        :return: The account information or None if not found.
         """
         try:
             with self.connect("budget_buddy") as conn:
@@ -187,7 +185,7 @@ class Database(ConnectDatabase):
                     return account
         except Error as e:
             print(f"Error getting account by IBAN: {e}")
-            return False
+            return None
         
     def get_client_ibans(self, id_client):
         """
@@ -221,7 +219,7 @@ class Database(ConnectDatabase):
                         FROM transaction t
                         JOIN account a ON t.id_origin_account = a.id_account
                         WHERE a.id_client = %s
-                    """, (id_client,))  # Add trailing comma to make it a tuple
+                    """, (id_client,))
                     transactions = cursor.fetchall()
                     return transactions
         except Error as e:
