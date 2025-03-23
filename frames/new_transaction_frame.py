@@ -77,7 +77,24 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
             return
 
         if transaction_type in ["deposit", "withdrawal"]:
-            target = None 
+            target = None
+
+        elif transaction_type == "transfer" and target is not None:
+            try:
+                target = self.database.get_account_by_iban(target)[0]
+            except (TypeError, IndexError):
+                messagebox.showerror("Transaction", "Target account does not exist.")
+                return
+        
+        else:
+            messagebox.showerror("Transaction", "Invalid transaction type.")
+            return
+        
+        try:
+            source = self.database.get_account_by_iban(source)[0]
+        except (TypeError, IndexError):
+            messagebox.showerror("Transaction", "Source account does not exist.")
+            return
 
         if self.database.save_transaction(transaction_type, amount, source, target):
             messagebox.showinfo("Transaction", "Transaction successful!")
