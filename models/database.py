@@ -227,6 +227,27 @@ class Database(ConnectDatabase):
             return []
         
 
+    def get_client_accounts(self, id_client):
+        """
+        Get the accounts of a client.
+        :param id_client: The ID of the client.
+        :return: The accounts of the client.
+        """
+        try:
+            with self.connect("budget_buddy") as conn:
+                if conn:
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        SELECT a.IBAN, a.amount, a.creation_date
+                        FROM account a
+                        WHERE a.id_client = %s
+                    """, (id_client,))
+                    accounts = cursor.fetchall()
+                    return accounts
+        except Error as e:
+            print(f"Error getting client accounts: {e}")
+            return []
+
 if __name__ == '__main__':
     db = Database()
     # db.create_account(1)

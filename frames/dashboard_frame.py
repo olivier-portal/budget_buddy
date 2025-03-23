@@ -27,20 +27,22 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.dashboard_frame.grid_columnconfigure(0, weight=1)
         self.dashboard_frame.grid_columnconfigure(1, weight=1)
         
-        # Create a container inside login_frame to hold widgets
+        # Create a container inside dashboard_frame to hold widgets
         self.inner_frame = ctk.CTkFrame(self.dashboard_frame, fg_color="white")
         self.inner_frame.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=20, pady=20)
         
         self.inner_frame.grid_rowconfigure(0, weight=1)
         self.inner_frame.grid_columnconfigure(0, weight=1)
 
-        # Add widgets to the frame
-        # self.label = ctk.CTkLabel(self.inner_frame, text="Dashboard", font=("Arial", 24))
-        # self.label.pack(padx=20, pady=20)
+        # Show client transactions
+        self.transactions_textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
+        self.transactions_textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+
+        self.load_transactions()
         
-        self.textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
-        self.textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-        self.textbox.insert("0.0", "Some example text!\n" * 50, "top")
+        # self.textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
+        # self.textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+        # self.textbox.insert("0.0", "Some example text!\n" * 50, "top")
         
         self.new_transaction_button = ctk.CTkButton(self.dashboard_frame, text="New transaction", height=40, command=lambda: self.switch_to_new_transaction())
         self.new_transaction_button.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
@@ -59,3 +61,22 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         """
         self.client = self.controller.client
         self.client_accounts = self.controller.get_client_accounts()
+
+    def load_transactions(self):
+        """
+        Method to load and display transactions for the client.
+        """
+        if self.client:
+            client_transactions = self.database.get_client_transactions(self.client[0])
+
+            if client_transactions:
+                transactions_text = "\n".join(
+                    [
+                        f"Transaction ID: {tx[0]}, From Account ID: {tx[1]}, To Account ID: {tx[2]}, Type: {tx[3]}, Amount: {tx[4]}, Date: {tx[5]}"
+                        for tx in client_transactions])
+                self.transactions_textbox.delete(1.0, ctk.END)
+                self.transactions_textbox.insert(ctk.END, transactions_text)
+
+            else:
+                self.transactions_textbox.delete(1.0, ctk.END)
+                self.transactions_textbox.insert(ctk.END, "No transactions found for this client.")
