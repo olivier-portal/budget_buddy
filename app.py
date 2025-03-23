@@ -89,18 +89,38 @@ class App(ctk.CTk):
     def add_header_label(self, text):
         self.header_label.configure(text=text)
 
+    def set_client(self, client):
+        """
+        Set the client variable and update it in all frames.
+        :param client: The client data to set.
+        """
+        self.client = client
+        for frame in self.frame.values():
+            frame.client = self.client  # Update the client in all frames
+            if hasattr(frame, "update_client_data"):
+                frame.update_client_data()  # Call update method if it exists
+
+    def get_client_accounts(self):
+        """
+        Fetch the IBANs of the client's accounts from the database.
+        :return: List of IBANs.
+        """
+        if self.client:
+            accounts = self.budget_db.get_client_ibans(self.client[0])
+            return [account[0] for account in accounts] if accounts else []
+        return []
 
 if __name__ == '__main__':
-    app = App()
+    controller = App()
 
-    if app.budget_db.database_exists():
-        app.mainloop()
+    if controller.budget_db.database_exists():
+        controller.mainloop()
     else:
-        app.budget_db = CreateDatabase()
-        app.budget_db.create_database()
-        app.budget_db.create_table_client()
-        app.budget_db.create_table_account()
-        app.budget_db.create_table_transaction()
-        app.budget_db = Database()  # Reconnect to the newly created database
+        controller.budget_db = CreateDatabase()
+        controller.budget_db.create_database()
+        controller.budget_db.create_table_client()
+        controller.budget_db.create_table_account()
+        controller.budget_db.create_table_transaction()
+        controller.budget_db = Database()  # Reconnect to the newly created database
 
-        app.mainloop()
+        controller.mainloop()

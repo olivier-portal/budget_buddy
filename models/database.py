@@ -101,40 +101,52 @@ class Database(ConnectDatabase):
             print(f"Error creating new account: {e}")
             return False
         
-    def update_account_balance(self, iban_account, amount):
+    def update_account_balance(self, id_account, amount):
         """
-        Update the amount of an account.
+        Update the balance of an account by adding the provided amount.
         :param id_account: The ID of the account.
-        :param amount: The new amount of the account.
-        :return: ∅
+        :param amount: The amount to add to the account balance.
+        :return: True if the update is successful, False otherwise.
         """
         try:
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
-                    cursor.execute("UPDATE account SET amount = %s WHERE IBAN = %s", (amount, iban_account))
+                    cursor.execute("SELECT amount FROM account WHERE id_account = %s", (id_account,))
+                    current_balance = cursor.fetchone()
+
+                    if current_balance is not None:
+                        current_balance = current_balance[0]  # Extract the decimal value from the tuple
+                        print(f"Current balance: {current_balance} (type: {type(current_balance)})")
+                    else:
+                        print("Account not found.")
+                        return False
+                    
+                    current_balance = current_balance + amount
+
+                    cursor.execute("UPDATE account SET amount = %s WHERE id_account = %s", (current_balance, id_account))
                     conn.commit()
                     return True
         except Error as e:
-            print(f"Error updating account amount: {e}")
+            print(f"Error updating account balance: {e}")
             return False
 
-    def save_transaction(self, transaction_type, amount, id_origin_account, id_destination_account=None):
+    def save_transaction(self, transaction_type, amount, id_origin_account, id_target_account=None):
         """
         Save a transaction between two accounts.
         :param id_origin_account: The ID of the account from which the amount is withdrawn.
-        :param id_destination_account: The ID of the account to which the amount is deposited.
+        :param id_target_account: The ID of the account to which the amount is deposited.
         :param amount: The amount of the transaction.
-        :return: ∅
+        :return: True if the transaction is saved successfully, False otherwise.
         """
         try:
             with self.connect("budget_buddy") as conn:
                 if conn:
                     cursor = conn.cursor()
                     cursor.execute("""
-                        INSERT INTO transaction (id_origin_account, id_destination_account, transaction_type, amount, transaction_date)
+                        INSERT INTO transaction (id_origin_account, id_target_account, transaction_type, amount, transaction_date)
                         VALUES (%s, %s, %s, %s, %s)
-                    """, (id_origin_account, id_destination_account, transaction_type, amount, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+                    """, (id_origin_account, id_target_account, transaction_type, amount, datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
                     conn.commit()
                     return True
         except Error as e:
@@ -162,7 +174,7 @@ class Database(ConnectDatabase):
         """
         Get the account information by IBAN.
         :param iban: The IBAN of the account.
-        :return: The account information.
+        :return: The account information or None if not found.
         """
         try:
             with self.connect("budget_buddy") as conn:
@@ -173,7 +185,7 @@ class Database(ConnectDatabase):
                     return account
         except Error as e:
             print(f"Error getting account by IBAN: {e}")
-            return False
+            return None
         
     def get_client_ibans(self, id_client):
         """
@@ -203,22 +215,22 @@ class Database(ConnectDatabase):
                 if conn:
                     cursor = conn.cursor()
                     cursor.execute("""
-                        SELECT t.id_transaction, t.id_origin_account, t.id_destination_account, t.transaction_type, t.amount, t.transaction_date
+                        SELECT t.id_transaction, t.id_origin_account, t.id_target_account, t.transaction_type, t.amount, t.transaction_date
                         FROM transaction t
                         JOIN account a ON t.id_origin_account = a.id_account
                         WHERE a.id_client = %s
-                        JOIN account b ON t.id_destination_account = b.id_account
-                        WHERE b.id_client = %s
-                    """, (id_client))
+                    """, (id_client,))
                     transactions = cursor.fetchall()
                     return transactions
         except Error as e:
             print(f"Error getting client transactions: {e}")
+            return []
+        
 
 if __name__ == '__main__':
     db = Database()
     # db.create_account(1)
-    print(db.database_exists())
-    print(db.get_client_ibans(1))
-    print(db.get_account_by_iban('R6IW5M0E8B2AK7OOIQZ4I5NF4JN0ZSL79N'))
-    # print(db.get_client_transactions(1))
+    # print(db.database_exists())
+    # print(db.get_client_ibans(1))
+    # print(db.get_account_by_iban('R6IW5M0E8B2AK7OOIQZ4I5NF4JN0ZSL79N'))
+    print(db.get_client_transactions(1))

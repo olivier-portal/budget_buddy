@@ -25,3 +25,8 @@ class FrameManager():
         """Switch to the accounts frame and update the header."""
         self.controller.add_header_label("Accounts")
         self.controller.show_frame("AccountsFrame")
+
+    def switch_to_new_transaction(self):
+        """Switch to the new transaction frame and update the header."""
+        self.controller.add_header_label("New Transaction")
+        self.controller.show_frame("NewTransactionFrame")
