@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
-import re
+from decimal import Decimal, InvalidOperation
 
 from frames.login_frame import *
 from frames.frame_manager import *
@@ -70,36 +70,34 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
 
         if not self.validate_amount(amount):
             messagebox.showerror("Transaction", "Amount must be a positive number.")
-            return
 
-        if transaction_type == "transfer" and not self.validate_target(target):
-            messagebox.showerror("Transaction", "Target account must be an existing account (IBAN).")
-            return
-
-        if transaction_type in ["deposit", "withdrawal"]:
-            target = None
-
-        elif transaction_type == "transfer" and target is not None:
-            try:
-                target = self.database.get_account_by_iban(target)[0]
-            except (TypeError, IndexError):
-                messagebox.showerror("Transaction", "Target account does not exist.")
+        if transaction_type == "transfer":
+            target_account = self.database.get_account_by_iban(target)
+            if target_account is None:
+                messagebox.showerror("Transaction", "Target account must be an existing account (IBAN).")
                 return
-        
+            else:
+                target = target_account[0]
+        elif transaction_type in ["deposit", "withdrawal"]:
+            target = None
         else:
             messagebox.showerror("Transaction", "Invalid transaction type.")
             return
-        
-        try:
-            source = self.database.get_account_by_iban(source)[0]
-        except (TypeError, IndexError):
-            messagebox.showerror("Transaction", "Source account does not exist.")
+
+        source_account = self.database.get_account_by_iban(source)
+        if source_account is None:
+            messagebox.showerror("Transaction", "Source account (IBAN) does not exist.")
             return
+        source = source_account[0]
 
         if self.database.save_transaction(transaction_type, amount, source, target):
-            messagebox.showinfo("Transaction", "Transaction successful!")
-
-            self.switch_to_dashboard()
+            messagebox.showinfo("Transaction", f"Transaction saved: {transaction_type}, {amount}, {source}, {target}")
+            print(f"Transaction saved: {transaction_type}, {amount}, {source}, {target}")
+            try:
+                self.update_accounts(transaction_type, amount, source, target)
+                self.switch_to_dashboard()
+            except Exception as e:
+                messagebox.showerror("Transaction", f"Transaction failed: {e}")
         else:
             messagebox.showerror("Transaction", "Transaction failed. Target account may not exist.")
 
@@ -108,14 +106,30 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         Update the account balances based on the transaction type.
         :param transaction_type: The type of transaction.
         :param amount: The amount of the transaction.
-        :param source: The source account (IBAN).
-        :param target: The target account (IBAN).
+        :param source: The source account ID.
+        :param target: The target account ID.
         """
-        if transaction_type == "transfer":
-            self.database.update_account_balance(source, -amount)  # update_account_balance to be continued
-            self.database.update_account_balance(target, amount)  
-        elif transaction_type == "deposit":
-            self.database.update_account_balance(source, amount)
+        try:
+            amount = Decimal(amount)  # Convert amount to Decimal for precise arithmetic
+            if transaction_type == "transfer":
+                # Deduct from source and add to target
+                if not self.database.update_account_balance(source, -amount):
+                    raise Exception(f"Failed to update source account: {source}")
+                if not self.database.update_account_balance(target, amount):
+                    raise Exception(f"Failed to update target account: {target}")
+            elif transaction_type == "deposit":
+                # Add to source
+                if not self.database.update_account_balance(source, amount):
+                    raise Exception(f"Failed to update source account: {source}")
+            elif transaction_type == "withdrawal":
+                # Deduct from source
+                if not self.database.update_account_balance(source, -amount):
+                    raise Exception(f"Failed to update source account: {source}")
+            else:
+                raise ValueError("Invalid transaction type.")
+        except Exception as e:
+            print(f"Error in update_accounts: {e}")
+            messagebox.showerror("Transaction", f"Failed to update accounts: {e}")
 
     def validate_amount(self, amount):
         """
@@ -124,8 +138,8 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         :return: True if valid, False otherwise.
         """
         try:
-            return float(amount) > 0
-        except ValueError:
+            return Decimal(amount) > 0  # Convert to Decimal for validation
+        except (ValueError, InvalidOperation):
             return False
         
     def validate_target(self, target):
@@ -143,5 +157,5 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         """
         self.client = self.controller.client
         self.client_accounts = self.controller.get_client_accounts()
-        self.origin_menu.configure(values=self.client_accounts)  # Update the dropdown menu
+        self.origin_menu.configure(values=self.client_accounts)
         print(f"Updated client in NewTransactionFrame: {self.client}")
