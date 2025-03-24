@@ -50,6 +50,7 @@ class AccountsFrame(ctk.CTkFrame):
             if success:
                 messagebox.showinfo("Add Account", "Account successfully created!")
                 self.update_client_data()  # Refresh client accounts
+                self.controller.frame['AccountsFrame'].load_accounts()
             else:
                 messagebox.showerror("Add Account", "Failed to create account.")
         else:

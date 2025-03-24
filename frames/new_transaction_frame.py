@@ -98,6 +98,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
             print(f"Transaction saved: {transaction_type}, {amount}, {source}, {target}")
             try:
                 self.update_accounts(transaction_type, amount, source, target)
+                self.controller.frame['DashboardFrame'].load_transactions()
                 self.switch_to_dashboard()
             except Exception as e:
                 messagebox.showerror("Transaction", f"Transaction failed: {e}")
