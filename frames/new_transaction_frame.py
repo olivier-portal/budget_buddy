@@ -26,7 +26,7 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.register_frame.grid(row=0, column=0, sticky="nsew")
 
         # Configure grid system for the register_frame
-        self.register_frame.grid_rowconfigure(list(range(10)), weight=1)
+        self.register_frame.grid_rowconfigure(list(range(11)), weight=1)
         self.register_frame.grid_columnconfigure(0, weight=1)
 
         # Add widgets using grid
@@ -53,14 +53,17 @@ class NewTransactionFrame(ctk.CTkFrame, FrameManager):
         self.target_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Target Account")
         self.target_entry.grid(row=6, column=0, pady=5, padx=10)
 
+        self.amount_label = ctk.CTkLabel(self.register_frame, text="Transaction amount")
+        self.amount_label.grid(row=7, column=0, pady=0, padx=10)
+
         self.amount_entry = ctk.CTkEntry(self.register_frame, placeholder_text="Transaction Amount")
-        self.amount_entry.grid(row=7, column=0, pady=5, padx=10)
+        self.amount_entry.grid(row=8, column=0, pady=5, padx=10)
 
         self.confirm_button = ctk.CTkButton(self.register_frame, text="Confirm", command=self.confirm_transaction)
-        self.confirm_button.grid(row=8, column=0, pady=5, padx=10)
+        self.confirm_button.grid(row=9, column=0, pady=5, padx=10)
 
         self.back_to_login_button = ctk.CTkButton(self.register_frame, text="Back to Login", command=lambda: self.switch_to_login())
-        self.back_to_login_button.grid(row=9, column=0, pady=5, padx=10)
+        self.back_to_login_button.grid(row=10, column=0, pady=5, padx=10)
 
     def confirm_transaction(self):
         transaction_type = self.type_var.get()
