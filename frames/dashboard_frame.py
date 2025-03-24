@@ -12,6 +12,7 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.client = client
         self.selected_account = selected_account
         print(client)
+        self.parent_frame = parent
         
         #Use FrameManager to switch between frames
         self.frame_manager = FrameManager(controller)
@@ -35,10 +36,8 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         self.inner_frame.grid_columnconfigure(0, weight=1)
 
         # Show client transactions
-        self.transactions_textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
-        self.transactions_textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-
-        self.load_transactions()
+        self.transactions_frame = ctk.CTkScrollableFrame(master=self.inner_frame, width=600, height=300, fg_color="white")
+        self.transactions_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         
         # self.textbox = ctk.CTkTextbox(self.dashboard_frame, height=10, width=50)
         # self.textbox.grid(row=0, columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -61,22 +60,34 @@ class DashboardFrame(ctk.CTkFrame, FrameManager):
         """
         self.client = self.controller.client
         self.client_accounts = self.controller.get_client_accounts()
+        self.load_transactions()
 
     def load_transactions(self):
         """
         Method to load and display transactions for the client.
         """
+        # Clear previous widgets
+        for widget in self.transactions_frame.winfo_children():
+            widget.destroy()
+            
+        client_transactions = []
+        
         if self.client:
             client_transactions = self.database.get_client_transactions(self.client[0])
 
-            if client_transactions:
-                transactions_text = "\n".join(
-                    [
-                        f"Transaction ID: {tx[0]}, From Account ID: {tx[1]}, To Account ID: {tx[2]}, Type: {tx[3]}, Amount: {tx[4]}, Date: {tx[5]}"
-                        for tx in client_transactions])
-                self.transactions_textbox.delete(1.0, ctk.END)
-                self.transactions_textbox.insert(ctk.END, transactions_text)
-
-            else:
-                self.transactions_textbox.delete(1.0, ctk.END)
-                self.transactions_textbox.insert(ctk.END, "No transactions found for this client.")
+        if client_transactions:
+            for idx, tx in enumerate(client_transactions):
+                tx_label = ctk.CTkLabel(
+                    master=self.transactions_frame,
+                    text=f"{tx[3]} | {tx[4]} € | Date: {tx[5]}",
+                    anchor="w",
+                    font=ctk.CTkFont(size=13)
+                )
+                tx_label.grid(row=idx, column=0, sticky="w", padx=10, pady=5)
+        else:
+            empty_label = ctk.CTkLabel(
+                master=self.transactions_frame,
+                text="No transactions found for this client.",
+                font=ctk.CTkFont(size=13, weight="bold")
+            )
+            empty_label.grid(row=0, column=0, padx=10, pady=10)
