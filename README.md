@@ -38,12 +38,12 @@ To use Budget Buddy, follow these steps:
 
 ## **License**
 
-Pokemon is released under the Apache-2.0 License. 
+Budget Buddy is released under the Apache-2.0 License. 
 See the **[LICENSE](http://www.apache.org/licenses/LICENSE-2.0)** file for details.
 
 ## **Authors and Acknowledgment**
 
-Pokemon was created by :
+Budget Buddy was created by :
 
 - **[Thibault CARON](https://github.com/thibault-caron)**
 - **[Lorenzo OTTAVIANI](https://github.com/lorenzo-ottaviani)**
