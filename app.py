@@ -1,7 +1,6 @@
 import customtkinter as ctk
 from frames import *
 from models import *
-from frames.frame_manager import FrameManager
 from PIL import Image
 import os
 
